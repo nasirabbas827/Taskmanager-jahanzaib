@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Update Task Status{% endblock %}
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="mb-3">Update Status for Task: <span class="text-primary">{{ task.title }}</span></h2>
+
+    <form method="post" class="row g-3">
+        {% csrf_token %}
+        <div class="col-12 col-md-6">
+            <label for="status" class="form-label">Select New Status</label>
+            <select name="status" id="status" class="form-select" required>
+                {% for key, value in status_choices %}
+                <option value="{{ key }}" {% if task.status == key %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-success">Update</button>
+            <a href="{% url 'member_tasks' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

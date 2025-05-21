@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Task List{% endblock %}
+{% block content %}
+<h2 class="mb-3">Tasks</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{% url 'task_create' %}" class="btn btn-primary">Create New Task</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Deadline</th>
+                <th>Assigned To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.priority }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.deadline|default:"-" }}</td>
+                <td>
+                    {% if task.assigned_to %}
+                        {{ task.assigned_to.name }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-outline-warning me-1">Edit</a>
+                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No tasks found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

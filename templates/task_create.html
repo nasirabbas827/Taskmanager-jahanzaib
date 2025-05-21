@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Create Task{% endblock %}
+{% block content %}
+<h2>Create Task</h2>
+
+<form method="POST" class="row g-3">
+    {% csrf_token %}
+
+    <div class="col-md-6">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" name="title" type="text" class="form-control" required />
+    </div>
+
+    <div class="col-md-6">
+        <label for="deadline" class="form-label">Deadline</label>
+        <input id="deadline" name="deadline" type="date" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+        <label for="priority" class="form-label">Priority</label>
+        <select id="priority" name="priority" class="form-select" required>
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" name="status" class="form-select" required>
+            <option value="Pending" selected>Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label for="assigned_to" class="form-label">Assign To</label>
+        <select id="assigned_to" name="assigned_to" class="form-select">
+            <option value="">-- Select Member --</option>
+            {% for member in members %}
+                <option value="{{ member.id }}">{{ member.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-success">Create Task</button>
+        <a href="{% url 'task_list' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+</form>
+{% endblock %}

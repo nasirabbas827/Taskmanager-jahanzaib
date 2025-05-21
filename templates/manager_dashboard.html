@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Manager Dashboard{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <h2 class="mb-4 fw-bold">Welcome, {{ user_name }} (Manager)</h2>
+
+    <!-- Search and Filter Form -->
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-sm-6 col-md-3">
+            <label class="form-label">Search</label>
+            <input type="text" name="search" placeholder="Search tasks..." value="{{ search }}" class="form-control" />
+        </div>
+
+        <div class="col-sm-6 col-md-2">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                {% for key, val in status_choices %}
+                <option value="{{ key }}" {% if status_filter == key %}selected{% endif %}>{{ val }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-sm-6 col-md-2">
+            <label class="form-label">Priority</label>
+            <select name="priority" class="form-select">
+                <option value="">All Priority</option>
+                {% for key, val in priority_choices %}
+                <option value="{{ key }}" {% if priority_filter == key %}selected{% endif %}>{{ val }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-sm-6 col-md-2">
+            <label class="form-label">Assigned User</label>
+            <select name="assigned_user" class="form-select">
+                <option value="">All Members</option>
+                {% for user in assigned_users %}
+                <option value="{{ user.id }}" {% if assigned_user_filter|add:'' == user.id|stringformat:"s" %}selected{% endif %}>{{ user.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-6 col-md-2">
+            <label class="form-label">From</label>
+            <input type="date" name="date_from" value="{{ date_from }}" class="form-control" />
+        </div>
+
+        <div class="col-6 col-md-2">
+            <label class="form-label">To</label>
+            <input type="date" name="date_to" value="{{ date_to }}" class="form-control" />
+        </div>
+
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'manager_dashboard' %}" class="btn btn-outline-secondary ms-2">Reset</a>
+        </div>
+    </form>
+
+    <!-- Export Button -->
+    <div class="d-flex justify-content-end mb-3">
+        <button id="exportBtn" class="btn btn-success">Export to CSV</button>
+    </div>
+
+    <!-- Task Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                    <th>Assigned To</th>
+                </tr>
+            </thead>
+            <tbody id="taskTableBody">
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.priority }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.deadline|default:"-" }}</td>
+                    <td>
+                        {% if task.assigned_to %}
+                            {{ task.assigned_to.name }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No tasks found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="mt-5">
+        <canvas id="statusChart" style="max-width: 500px; height: 300px; margin: 0 auto;"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const statusData = {{ status_data|safe }};
+    const labels = Object.keys(statusData);
+    const data = Object.values(statusData);
+
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels.length ? labels : ['No Tasks'],
+            datasets: [{
+                data: data.length ? data : [1],
+                backgroundColor: ['#4e73df', '#f6c23e', '#1cc88a', '#e74a3b', '#36b9cc'],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Tasks by Status'
+                }
+            }
+        }
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        let csvContent = "data:text/csv;charset=utf-8," + "Title,Priority,Status,Deadline,Assigned To\n";
+        const rows = document.querySelectorAll('#taskTableBody tr');
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('td');
+            const rowData = Array.from(cols).map(col => {
+                let text = col.textContent.trim();
+                return text.includes(',') ? `"${text}"` : text;
+            });
+            csvContent += rowData.join(",") + "\n";
+        });
+
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", "task_report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+</script>
+{% endblock %}

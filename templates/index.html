@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to TaskFlow{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5 text-center">
+    <div class="container">
+        <h1 class="display-4">Welcome to TaskFlow</h1>
+        <p class="lead">A streamlined task management platform for teams and individuals to stay organized, productive, and on time.</p>
+        <a href="{% url 'user_login' %}" class="btn btn-light btn-lg mt-3">Get Started</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Task Assignment</h5>
+                        <p class="card-text">Assign tasks to team members and track responsibilities with ease.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Priority & Status</h5>
+                        <p class="card-text">Set task priorities and statuses to monitor progress effectively.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Deadline Management</h5>
+                        <p class="card-text">Keep projects on track with clear deadline visibility and alerts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h5>1. Register</h5>
+                <p>Create your account and set up your team.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>2. Create Tasks</h5>
+                <p>Add and assign tasks with relevant details and deadlines.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>3. Track Progress</h5>
+                <p>Monitor status updates and team performance in real time.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>4. Stay Organized</h5>
+                <p>Maintain control and clarity across all your projects.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">What Users Say</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <blockquote class="blockquote">
+                    <p>"TaskFlow has transformed the way our team handles projects. It's simple and effective!"</p>
+                    <footer class="blockquote-footer">Sana Malik, Project Manager</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-6">
+                <blockquote class="blockquote">
+                    <p>"The best part is how easy it is to assign and update tasks. Love the UI!"</p>
+                    <footer class="blockquote-footer">Ahmed Raza, Team Lead</footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="bg-dark text-white py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Contact Us</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-light">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Edit Task{% endblock %}
+{% block content %}
+<h2 class="mb-4">Edit Task</h2>
+
+<form method="POST" class="row g-3">
+    {% csrf_token %}
+
+    <div class="col-12">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" name="title" type="text" class="form-control" value="{{ task.title }}" required />
+    </div>
+
+    <div class="col-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="4">{{ task.description }}</textarea>
+    </div>
+
+    <div class="col-md-4">
+        <label for="priority" class="form-label">Priority</label>
+        <select id="priority" name="priority" class="form-select" required>
+            <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+            <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" name="status" class="form-select" required>
+            <option value="Pending" {% if task.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label for="deadline" class="form-label">Deadline</label>
+        <input id="deadline" name="deadline" type="date" class="form-control" value="{{ task.deadline|date:'Y-m-d' }}" />
+    </div>
+
+    <div class="col-12">
+        <label for="assigned_to" class="form-label">Assign To</label>
+        <select id="assigned_to" name="assigned_to" class="form-select">
+            <option value="">-- Select Member --</option>
+            {% for member in members %}
+                <option value="{{ member.id }}" {% if task.assigned_to and task.assigned_to.id == member.id %}selected{% endif %}>{{ member.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary">Update Task</button>
+        <a href="{% url 'task_list' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+</form>
+{% endblock %}
